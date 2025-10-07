@@ -297,7 +297,7 @@ const OurStoryPage = () => (
         </div>
     </div>
 );
-const apiUrl = process.env.REACT_APP_API_URL || '';
+
 const ContactUsPage = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState({ message: '', type: '' });
@@ -312,6 +312,7 @@ const ContactUsPage = () => {
     setStatus({ message: 'Sending...', type: 'info' });
 
     try {
+        const apiUrl = process.env.REACT_APP_API_URL || '';
         const response = await fetch(`${apiUrl}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
