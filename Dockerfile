@@ -1,4 +1,5 @@
-# Use a more recent version of the official Golang image
+# Use the official Golang image which includes all necessary tools and certificates
+# This version is updated to satisfy the go.mod requirements.
 FROM golang:1.22-bookworm as builder
 
 # Set the Current Working Directory inside the container
@@ -31,3 +32,4 @@ EXPOSE 8080
 
 # Command to run the executable
 CMD ["server"]
+
