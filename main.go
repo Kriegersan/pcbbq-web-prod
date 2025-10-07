@@ -118,10 +118,10 @@ func main() {
 	mux.HandleFunc("/api/contact", contactHandler)
 
 	// CORS configuration
-	// This allows your React frontend (from any domain) to make requests to this API.
-	// For production, you should restrict this to your actual frontend domain.
+	// Explicitly list the allowed origins.
+	// This tells the browser that it's safe to accept requests from your frontend domain.
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"}, // Allows all origins for now
+		AllowedOrigins:   []string{"https://pinecoastbbq.com", "http://localhost:3000"}, // Allow production and local development
 		AllowedMethods:   []string{"POST", "OPTIONS"},
 		AllowedHeaders:   []string{"Content-Type"},
 		AllowCredentials: true,
