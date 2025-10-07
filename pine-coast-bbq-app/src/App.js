@@ -314,10 +314,12 @@ const ContactUsPage = () => {
     try {
         const apiUrl = process.env.REACT_APP_API_URL || '';
         const response = await fetch(`${apiUrl}/api/contact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
 
       if (response.ok) {
         setStatus({ message: 'Success! We will get back to you soon.', type: 'success' });
