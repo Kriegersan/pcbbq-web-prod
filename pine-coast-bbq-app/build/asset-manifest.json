@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/static/css/main.435a2076.css",
+    "main.js": "/static/js/main.aefc6f8b.js",
+    "static/js/453.a432b56a.chunk.js": "/static/js/453.a432b56a.chunk.js",
+    "static/media/20231104_184932.jpg": "/static/media/20231104_184932.4c131e9d13f38cb309e7.jpg",
+    "static/media/PXL_20251005_165652944~2.jpg": "/static/media/PXL_20251005_165652944~2.9228a7b000a357484dfe.jpg",
+    "static/media/PXL_20251005_190600955~2.jpg": "/static/media/PXL_20251005_190600955~2.832b1dfc5291c9870e34.jpg",
+    "static/media/20200626_130143.jpg": "/static/media/20200626_130143.b9c57ed4db8053f9ca07.jpg",
+    "static/media/PXL_20220410_172128719.jpg": "/static/media/PXL_20220410_172128719.6209cca9fca8bcac09bc.jpg",
+    "static/media/Copy of PXL_20220704_234728019.jpg": "/static/media/Copy of PXL_20220704_234728019.2eb91561f3560a760043.jpg",
+    "static/media/PCBLogo_nobak.png": "/static/media/PCBLogo_nobak.0c49194d6431a97d19f7.png",
+    "index.html": "/index.html",
+    "main.435a2076.css.map": "/static/css/main.435a2076.css.map",
+    "main.aefc6f8b.js.map": "/static/js/main.aefc6f8b.js.map",
+    "453.a432b56a.chunk.js.map": "/static/js/453.a432b56a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.435a2076.css",
+    "static/js/main.aefc6f8b.js"
+  ]
+}
