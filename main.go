@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"net/smtp"
 	"os"
-	// "path/filepath" // Removed as it's unused
-	// "strings" // Removed as it's unused
 
 	"github.com/rs/cors" // Import the cors package
 )
@@ -34,12 +32,12 @@ var appConfig Config
 
 // contactHandler handles the POST request from the contact form
 func contactHandler(w http.ResponseWriter, r *http.Request) {
-	// Set CORS headers to allow requests from the React frontend
-	w.Header().Set("Access-Control-Allow-Origin", "*") // Be more specific in production
-	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	// The CORS middleware handles these headers, but we can leave them for clarity if needed
+	// w.Header().Set("Access-Control-Allow-Origin", "*")
+	// w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+	// w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	// Handle preflight OPTIONS request for CORS
+	// The CORS middleware also handles the OPTIONS preflight request
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
 		return
@@ -110,46 +108,23 @@ func loadConfig() {
 	}
 }
 
-// spaRouter serves the single-page application.
-// It ensures that any request that doesn't match an API endpoint or a static file
-// serves the index.html file, allowing the React router to handle the URL.
-type spaRouter struct {
-	staticPath    string
-	staticHandler http.Handler
-}
-
-func (h spaRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// Check if the file exists in our static assets
-	_, err := os.Stat(h.staticPath + r.URL.Path)
-	if os.IsNotExist(err) {
-		// File does not exist, serve index.html
-		http.ServeFile(w, r, h.staticPath+"/index.html")
-		return
-	}
-	// Otherwise, serve the static file
-	h.staticHandler.ServeHTTP(w, r)
-}
 
 func main() {
-    loadConfig() // Load environment variables on startup
+	loadConfig() // Load environment variables on startup
 
 	mux := http.NewServeMux()
 
 	// Handle API endpoint
 	mux.HandleFunc("/api/contact", contactHandler)
 
-	// Serve the static React files
-	staticDir := "./pine-coast-bbq-app/build"
-	fileServer := http.FileServer(http.Dir(staticDir))
-	mux.Handle("/", spaRouter{staticPath: staticDir, staticHandler: fileServer})
-
 	// CORS configuration
 	// This allows your React frontend (from any domain) to make requests to this API.
-	// For production, you might want to restrict this to your actual frontend domain.
+	// For production, you should restrict this to your actual frontend domain.
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"}, // Allows all origins
-		AllowedMethods: []string{"GET", "POST", "OPTIONS"},
-		AllowedHeaders: []string{"Content-Type"},
+		AllowedOrigins:   []string{"*"}, // Allows all origins for now
+		AllowedMethods:   []string{"POST", "OPTIONS"},
+		AllowedHeaders:   []string{"Content-Type"},
+		AllowCredentials: true,
 	})
 
 	handler := c.Handler(mux) // Wrap your router with the CORS middleware
@@ -159,8 +134,7 @@ func main() {
 		port = "8080"
 	}
 
-	log.Printf("Server starting on port %s...", port)
-	log.Printf("Serving React app from '%s'", staticDir)
+	log.Printf("API Server starting on port %s...", port)
 	log.Println("API endpoint available at /api/contact")
 
 	if err := http.ListenAndServe(":"+port, handler); err != nil { // Use the CORS-wrapped handler
