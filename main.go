@@ -7,6 +7,10 @@ import (
 	"net/http"
 	"net/smtp"
 	"os"
+	"path/filepath"
+	"strings"
+
+	"github.com/rs/cors" // Import the cors package
 )
 
 // Configuration struct to hold environment variables
@@ -107,28 +111,37 @@ func loadConfig() {
 }
 
 func main() {
-	loadConfig()
+	mux := http.NewServeMux()
 
-	// Serve the React build files
-	// This assumes you will place your React 'build' directory inside the Go project
-	fs := http.FileServer(http.Dir("./pine-coast-bbq-app/build"))
-	http.Handle("/", fs)
+	// Handle API endpoint
+	mux.HandleFunc("/api/contact", contactHandler)
 
-	// API route for the contact form
-	http.HandleFunc("/api/contact", contactHandler)
+	// Serve the static React files
+	staticDir := "./pine-coast-bbq-app/build"
+	fileServer := http.FileServer(http.Dir(staticDir))
+	mux.Handle("/", spaRouter{staticPath: staticDir, staticHandler: fileServer})
+
+	// CORS configuration
+	// This allows your React frontend (from any domain) to make requests to this API.
+	// For production, you might want to restrict this to your actual frontend domain.
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"}, // Allows all origins
+		AllowedMethods: []string{"GET", "POST", "OPTIONS"},
+		AllowedHeaders: []string{"Content-Type"},
+	})
+
+	handler := c.Handler(mux) // Wrap your router with the CORS middleware
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // Default port if not specified
+		port = "8080"
 	}
 
 	log.Printf("Server starting on port %s...", port)
-	log.Printf("Serving React app from './pine-coast-bbq-app/build'")
-	log.Printf("API endpoint available at /api/contact")
+	log.Printf("Serving React app from '%s'", staticDir)
+	log.Println("API endpoint available at /api/contact")
 
-	// Start the server
-	err := http.ListenAndServe(":"+port, nil)
-	if err != nil {
-		log.Fatalf("Failed to start server: %v", err)
+	if err := http.ListenAndServe(":"+port, handler); err != nil { // Use the CORS-wrapped handler
+		log.Fatal("ListenAndServe:", err)
 	}
 }
