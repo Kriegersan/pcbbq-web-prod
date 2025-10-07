@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/smtp"
 	"os"
-	"path/filepath"
-	"strings"
+	// "path/filepath" // Removed as it's unused
+	// "strings" // Removed as it's unused
 
 	"github.com/rs/cors" // Import the cors package
 )
@@ -110,7 +110,29 @@ func loadConfig() {
 	}
 }
 
+// spaRouter serves the single-page application.
+// It ensures that any request that doesn't match an API endpoint or a static file
+// serves the index.html file, allowing the React router to handle the URL.
+type spaRouter struct {
+	staticPath    string
+	staticHandler http.Handler
+}
+
+func (h spaRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// Check if the file exists in our static assets
+	_, err := os.Stat(h.staticPath + r.URL.Path)
+	if os.IsNotExist(err) {
+		// File does not exist, serve index.html
+		http.ServeFile(w, r, h.staticPath+"/index.html")
+		return
+	}
+	// Otherwise, serve the static file
+	h.staticHandler.ServeHTTP(w, r)
+}
+
 func main() {
+    loadConfig() // Load environment variables on startup
+
 	mux := http.NewServeMux()
 
 	// Handle API endpoint
