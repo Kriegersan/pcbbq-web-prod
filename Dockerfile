@@ -1,5 +1,5 @@
-# Use the official Golang image which includes all necessary tools and certificates
-FROM golang:1.21-bookworm as builder
+# Use a more recent version of the official Golang image
+FROM golang:1.22-bookworm as builder
 
 # Set the Current Working Directory inside the container
 WORKDIR /app
