@@ -23,7 +23,7 @@ const CloseIcon = () => (
 // --- Components ---
 
 const Header = ({ setCurrentPage, isMenuOpen, setIsMenuOpen }) => {
-  const navLinks = ['Home', 'Menu', 'Our Story', 'Contact Us'];
+  const navLinks = ['Home', 'Menu', 'Game Day', 'Our Story', 'Contact Us'];
 
   return (
     <header className="bg-[#05412b] bg-opacity-90 backdrop-blur-md text-white shadow-lg sticky top-0 z-50">
@@ -134,56 +134,63 @@ const HomePage = ({ setCurrentPage }) => (
   </div>
 );
 
+// Shared menu-style building blocks, used by both the Menu and Game Day pages.
+const MenuCategory = ({ title, children, subtitle }) => (
+    <div className="mb-12">
+        <h3 className="text-3xl font-bold text-[#05412b] border-b-2 border-[#05412b]/30 pb-2 mb-2">{title}</h3>
+        {subtitle && <p className="text-md text-gray-600 mb-6 italic">{subtitle}</p>}
+        <div className="space-y-6">
+            {children}
+        </div>
+    </div>
+);
+
+const MenuItem = ({ name, description, price, note, subItems }) => (
+    <div>
+        <div className="flex justify-between items-baseline">
+            <h4 className="text-xl font-semibold text-gray-800">{name}</h4>
+            {price && <p className="text-lg font-medium text-gray-700 whitespace-nowrap pl-4">{price}</p>}
+        </div>
+        {description && <p className="text-md text-gray-600 mt-1" style={{ whiteSpace: 'pre-line' }}>{description}</p>}
+        {note && <p className="text-md text-gray-500 italic mt-1">{note}</p>}
+        {subItems && (
+            <ul className="list-disc list-inside text-md text-gray-600 mt-2 sm:columns-2">
+                {subItems.map(s => <li key={s}>{s}</li>)}
+            </ul>
+        )}
+    </div>
+);
+
 const MenuPage = () => {
     // Menu Data Structure
     const menuData = {
         introduction: [
-            "The limited menu is selected with purpose, and remains traditional to classic southern bbq with Maine ingredients. Pine Coast BBQ is rooted in family and tradition, drawing influence beyond Maine to the co-founder's German-American heritage.",
             "Maine has a rich history of agriculture. Pine Coast BBQ brings a bold, innovative twist to traditional barbecue, redefining what a Maine family restaurant can be. With a commitment to creativity and a fearless approach to flavor, our fusion-style menu blends hometown comfort with unexpected combinations that go beyond southern staples."
         ],
-        smallBites: {
-            price: "$9",
-            items: [
-                { name: "Farmstand Veggie Dippers", description: "Crisp cucumbers, sweet bell peppers, crunchy carrots, and golden fried green beans served with creamy farmhouse ranch" },
-                { name: "Lumberjack Jalapeños", description: "Smoked jalapeños stuffed with melty cheese and tender pulled pork, wrapped in crispy bacon, and finished with a bold and vibrant pepper sauce" },
-                { name: "BBQ Shrimp Cocktail", description: "Chilled, smoked BBQ shrimp served with a zesty cocktail sauce" },
-                { name: "Elote Corn Dip", description: "Creamy, cheesy street corn dip with a hint of spice and citrus, served warm alongside soft pretzel buns and crunchy tortilla chips" },
-                { name: "Pinecone Poppers", description: "Our Maine take on the classic BBQ “shotgun shells” of stuffed pasta shells filled with brisket and cheese, wrapped in bacon and served with our classic BBQ sauce and cool ranch" },
-                { name: "Smokestack Stuffers", description: "Golden-fried bites of our creamy, smoked mac and cheese stuffed with pulled pork, pickled jalapenos, and crispy bacon. Served with bold and vibrant pepper sauce and our classic BBQ sauce" }
-            ]
-        },
         dinnerPlates: {
             description: "all served with Pickles, Picked onions and jalapenos",
             options: [
-                "1 meat, 1 side", "2 meats, 2 sides", "3 meats, 3 sides", "4 meats, 4 sides", "Family platter - 5 meats, 5 sides"
+                "Mini Platter – 3 meats, 3 sides, served with cornbread",
+                "Family Platter – 5 meats, 5 sides, served with cornbread"
             ]
         },
         meats: [
-            "Brisket", "Pulled Pork", "Pork Ribs", "Chicken quarters", "Chicken legs", "Chicken thighs", "Chicken wings", "Beef ribs", "Burnt ends: beef or pork", "Sausage (Chorizo sausage, Jalapeno cheddar sausage, and Veggie Sausage)", "Pulled turkey or sliced turkey breast", "Lobster tails (Mrkt availability)"
+            "Brisket", "Pulled Pork", "Pork Ribs", "Chicken thighs", "Turkey breast", "House Sausage", "Gouda & Poblano Sausage", "Lobster tails (Mrkt availability)"
         ],
         sandwiches: {
-            description: "served with 2 sides",
+            description: "all served with choice of 2 sides",
             items: [
                 { name: "Pulled Pork Sandwich", description: "Slow-smoked pulled pork piled high on a toasted bun, topped with creamy coleslaw and crisp pickles" },
-                { name: "Brisket Sandwich", description: "Thin sliced tender brisket piled high on a toasted bun, topped with creamy coleslaw and crisp pickles" },
-                { name: "Chicken Sandwich", description: "Slow-smoked pulled chicken piled high on a toasted bun, topped with creamy coleslaw and crisp pickles" },
-                { name: "Smoked BBQ Meatball Sub", description: "House-smoked meatballs drenched in our classic BBQ sauce, topped with melted cheese, pickled jalapenos, and fresh scallions, served on a toasted sub roll" },
-                { name: "Smoked Brisket Cheesesteak", description: "Chopped, smoked brisket grilled with peppers and onions, smothered in melted cheese, and served on a toasted sub roll" }
+                { name: "Brisket Sandwich", description: "Thin sliced tender brisket piled high on a toasted bun, topped with creamy coleslaw and crisp pickles" }
             ]
         },
         sides: {
-            price: "$4 for small, $5 for large",
+            note: "+$2 Cornbread with Maple Butter",
             items: [
                 { name: "Smoked Mac 'n Cheese", description: "Classic macaroni bathed in a rich blend of melted cheeses, slow-smoked directly on the pit for deep, wood-fired flavor." },
                 { name: "Classic Coleslaw", description: "Crisp cabbage and carrots tossed in a tangy, creamy dressing sweetened naturally" },
-                { name: "Cornbread Duo: Choose your flavor", description: "Sweet Maple Butter – Soft, golden cornbread served with whipped maple butter\nSpicy Jalapeño Cheddar – A bold twist with melty cheddar and a kick of jalapeño" },
-                { name: "BLT Pasta Salad", description: "A twist on a classic with pasta tossed with smoky bacon, juicy tomatoes, and herbs in a creamy homemade Ranch dressing" },
                 { name: "Bean Hole Beans", description: "Slow-cooked in traditional Maine bean hole style, these rich, molasses-kissed beans are smoky, sweet, and deeply satisfying" },
-                { name: "Classic Potato Salad", description: "Tender red potatoes mixed with eggs, onion, celery, and a creamy mustard dressing finished with fresh herbs" },
-                { name: "Smoked Elote", description: "Smoked sweet corn on the cob tossed with spices, creamy sauce, cotija cheese, and fresh herbs" },
-                { name: "Farmhouse Salad", description: "Fresh greens and garden veggies served with homemade Ranch dressing" },
-                { name: "Chipotle Caesar", description: "Crisp romaine tossed in smoky chipotle Caesar dressing, topped with cheddar and crunchy cornbread croutons" },
-                { name: "Hand Cut Fries", description: "Fresh-cut and fried to golden perfection, seasoned with your choice of our signature BBQ rub or Salt & Vinegar." }
+                { name: "Classic Potato Salad", description: "Tender red potatoes mixed with eggs, onion, celery, and a creamy mustard dressing finished with fresh herbs" }
             ]
         },
         desserts: {
@@ -198,26 +205,6 @@ const MenuPage = () => {
         }
     };
 
-    const MenuCategory = ({ title, children, subtitle }) => (
-        <div className="mb-12">
-            <h3 className="text-3xl font-bold text-[#05412b] border-b-2 border-[#05412b]/30 pb-2 mb-2">{title}</h3>
-            {subtitle && <p className="text-md text-gray-600 mb-6 italic">{subtitle}</p>}
-            <div className="space-y-6">
-                {children}
-            </div>
-        </div>
-    );
-
-    const MenuItem = ({ name, description, price }) => (
-        <div>
-            <div className="flex justify-between items-baseline">
-                <h4 className="text-xl font-semibold text-gray-800">{name}</h4>
-                {price && <p className="text-lg font-medium text-gray-700 whitespace-nowrap pl-4">{price}</p>}
-            </div>
-            <p className="text-md text-gray-600 mt-1" style={{ whiteSpace: 'pre-line' }}>{description}</p>
-        </div>
-    );
-
     return (
         <div className="py-16 bg-gray-50">
             <div className="container mx-auto px-6 max-w-4xl">
@@ -226,48 +213,185 @@ const MenuPage = () => {
                     {menuData.introduction.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
                 </div>
 
-                {/* Small Bites */}
-                <MenuCategory title="Small Bites" subtitle={menuData.smallBites.price}>
-                    {menuData.smallBites.items.map(item => <MenuItem key={item.name} {...item} />)}
+                {/* Meats */}
+                <MenuCategory title="Meats">
+                    <p className="columns-2 md:columns-3 gap-x-8 text-gray-700">
+                        {menuData.meats.map(meat => <span key={meat} className="block mb-1">{meat}</span>)}
+                    </p>
+                </MenuCategory>
+
+                {/* Sides */}
+                <MenuCategory title="Sides">
+                    {menuData.sides.items.map(item => <MenuItem key={item.name} {...item} />)}
+                    <p className="text-md text-gray-700 font-medium pt-2">{menuData.sides.note}</p>
                 </MenuCategory>
 
                 {/* Dinner Plates */}
                 <MenuCategory title="Dinner Plates" subtitle={menuData.dinnerPlates.description}>
-                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
                         {menuData.dinnerPlates.options.map(option => (
-                           <div key={option} className="bg-white p-3 rounded-lg shadow-sm">
+                           <div key={option} className="bg-white p-4 rounded-lg shadow-sm">
                                <p className="font-semibold">{option}</p>
                            </div>
                         ))}
                     </div>
                 </MenuCategory>
 
-                {/* Meats */}
-                 <MenuCategory title="Meats">
-                    <p className="columns-2 md:columns-3 gap-x-8 text-gray-700">
-                        {menuData.meats.map(meat => <span key={meat} className="block mb-1">{meat}</span>)}
-                    </p>
-                </MenuCategory>
-
                 {/* Sandwiches */}
                 <MenuCategory title="Sandwiches" subtitle={menuData.sandwiches.description}>
                     {menuData.sandwiches.items.map(item => <MenuItem key={item.name} {...item} />)}
                 </MenuCategory>
-                
-                {/* Sides */}
-                <MenuCategory title="Sides" subtitle={menuData.sides.price}>
-                    {menuData.sides.items.map(item => <MenuItem key={item.name} {...item} />)}
-                </MenuCategory>
-                
+
                 {/* Desserts */}
                 <MenuCategory title="Desserts" subtitle={menuData.desserts.price}>
                     {menuData.desserts.items.map(item => <MenuItem key={item.name} {...item} />)}
                 </MenuCategory>
 
+                <p className="text-center text-2xl font-semibold text-[#05412b] mt-12 font-serif">Brunch coming soon!</p>
+
             </div>
         </div>
     );
 };
+
+const GameDayPage = () => {
+    const pricing = [
+        { platter: "Small Bite Platters", serves: "Serves 10–12 guests (approx. 30–35 pieces total)", price: "$65 – $85 per platter, or $4.50 – $6.00 per piece (individual count)" },
+        { platter: "Meat Platters", serves: "Serves 10–12 guests (approx. 4–5 lbs, served buffet style)", price: "$120 – $170 per platter, or $14 – $18 per person" },
+        { platter: "Side Platters", serves: "Serves 12–15 guests (standard half-pan pans)", price: "$45 – $65 per half-pan" },
+        { platter: "Soups & Sandwich Platters", serves: "Serves 10–12 guests. Bulk quart options of Smoked Seafood Chowder, Brisket Soup, Chili, or slider/sandwich bundles with buns.", price: "$75 – $110 per soup gallon / $90 per sandwich platter" },
+        { platter: "Desserts", serves: "Serves 10–12 guests", price: "$40 – $60 per whole cake or sweet tray" },
+    ];
+
+    const smallBites = [
+        { name: "Farmstand Veggie Dippers", description: "Crisp cucumbers, sweet bell peppers, crunchy carrots, and golden fried green beans served with a homemade, farmhouse ranch." },
+        { name: "Lumberjack Jalapeños", description: "Smoked jalapeños stuffed with melty cheese and tender pulled pork, wrapped in crispy bacon, and finished with a bold and vibrant pepper sauce." },
+        { name: "BBQ Shrimp Cocktail", description: "Chilled, smoked BBQ shrimp served with a zesty cocktail sauce." },
+        { name: "Elote Corn Dip", description: "Creamy, cheesy street corn dip with a hint of spice and citrus, served warm alongside soft pretzel buns and crunchy tortilla chips." },
+        { name: "Pinecone Poppers", description: "Our Maine take on the classic BBQ “shotgun shells” of stuffed pasta shells filled with brisket and cheese, wrapped in bacon and served with our classic BBQ sauce and cool ranch." },
+        { name: "Smokestack Stuffers", description: "Golden-fried bites of our creamy, smoked mac and cheese stuffed with pulled pork, pickled jalapenos, and crispy bacon. Served with bold and vibrant pepper sauce and our classic BBQ sauce." },
+        { name: "Smoked Buffalo Chicken Dip", description: "A spicy blend of smoked pulled chicken, rich cheese, and buffalo sauce, infused with a deep hardwood smoke flavor and served warm with tortilla chips and crudité." },
+        { name: "BBQ Eggrolls", description: "Crispy, golden-fried wrappers packed with tender pulled pork, caramelized onions, cheese, and coleslaw, served with a side of our house BBQ sauce." },
+        { name: "Smoked Chex Mix", description: "A classic crunchy cereal snack slow-smoked with our house BBQ seasoning for an addictive, BBQ twist on a party favorite." },
+        { name: "Mac n Cheese Bombs", description: "Crispy deep-fried balls of creamy mac n cheese loaded with pulled pork, caramelized onions, and sweet-and-spicy candied jalapeños, served with a vibrant green Peruvian hot pepper sauce and our house BBQ sauce." },
+        { name: "Mini Chicken & Waffle Bites", description: "Golden, bite-sized buttermilk blueberry waffles topped with a pile of pulled chicken, skewered and served with a chipotle maple drizzle." },
+        { name: "Brisket Deviled Eggs", description: "Rich, smoky egg yolks crowned with tender smoked brisket, sweet-and-spicy candied jalapeños, and fresh chives." },
+        { name: "Smoked Chipotle Queso", description: "Velvety, melted cheese dip spiced with smoky chipotle peppers, roasted poblanos, and aromatic herbs, served piping hot with house tortilla chips." },
+        { name: "Smoked Lobster Fritters", description: "Smoked Old Bay seasoned lobster tail and claw meat inside a deep fried donut bite served with a vibrant green Peruvian hot pepper sauce." },
+        { name: "Ranch Pickle Dip", description: "Cool, creamy ranch dip blended with zesty dill pickles and fresh herbs, served with crisp fresh vegetables and potato chips for ultimate dipping." },
+        { name: "Reuben Fritters", description: "Crispy, golden-fried spheres packed with tender corned beef, tangy sauerkraut, and melted Swiss cheese, served with a side of zesty thousand island dressing." },
+    ];
+
+    const meats = [
+        { name: "BBQ Smoked Chicken Wings", description: "Juicy chicken wings rubbed with our house seasoning, slow-smoked and served with our house BBQ sauce and homemade farmhouse ranch." },
+        { name: "Texas-Style Brisket", description: "Prime beef brisket seasoned simply with salt and coarse black pepper, slow-smoked for up to 16 hours until melt-in-your-mouth tender with a rich, peppery bark.", note: "An award winning classic" },
+        { name: "Pulled Pork", description: "Boston butt pork roast rubbed, smoked low and slow, and hand-shredded into tender, juicy ribbons of savory perfection." },
+        { name: "Pork Ribs", description: "Rack of tender ribs featuring a sticky, caramelized maple glaze and sweet-and-savory rub." },
+        { name: "Chicken Quarters", description: "Juicy, bone-in chicken legs infused with aromatic wood smoke and finished with a crisp, seasoned skin." },
+        { name: "Smoked Lobster Tails", description: "Fresh coastal lobster tails gently kissed with wood smoke and basted in Old Bay butter." },
+        { name: "Burnt Ends (Beef or Pork)", description: "The prized, heavily barked “candy of the barbecue,” cubed, re-seasoned, caramelized in our house BBQ sauce, and rendered to melt in your mouth." },
+        { name: "House Made Sausage", description: "Custom-blended, artisan sausage stuffed in-house, slow-smoked, and loaded with flavor. A few examples:", subItems: ["House Sausage", "Gouda & Poblano", "Blueberry Breakfast", "Octoberfest", "Dilly Boy", "Apple Cheddar"] },
+        { name: "Turkey Breast", description: "Juicy turkey breast rubbed with our house seasoning and smoked until tender and juicy." },
+        { name: "Pulled Chicken", description: "Juicy whole-chicken meat slow-smoked and shredded into juicy, flavorful morsels tossed lightly in our signature BBQ sauce." },
+        { name: "Brisket Meatballs", description: "Hand-rolled meatballs crafted from ground smoked brisket, charred to perfection, and simmered in a rich, savory glaze." },
+    ];
+
+    const sidePlatters = [
+        { name: "Smoked Mac 'n Cheese", description: "Classic macaroni bathed in a rich blend of melted cheeses, slow-smoked directly on the pit for deep, wood-fired flavor and topped with buttered, cheesy breadcrumbs." },
+        { name: "Classic Coleslaw", description: "Crisp cabbage and carrots tossed in a tangy, creamy dressing sweetened naturally." },
+        { name: "BLT Pasta Salad", description: "A twist on a classic with pasta tossed with smoky bacon, juicy tomatoes, and herbs in a creamy homemade Ranch dressing." },
+        { name: "Classic Potato Salad", description: "Tender red potatoes mixed with eggs, onion, celery, and a creamy mustard dressing finished with fresh herbs." },
+        { name: "Bean Hole Beans", description: "Slow-cooked in traditional Maine bean hole style, these rich, molasses-kissed beans are smoky, sweet, and deeply satisfying." },
+        { name: "Smoked Elote", description: "Smoked sweet corn tossed with creamy sauce, cotija cheese, jalapenos, red onion, and fresh herbs." },
+        { name: "Chipotle Caesar", description: "Crisp romaine tossed in smoky chipotle Caesar dressing, topped with cheddar and crunchy cornbread croutons." },
+        { name: "Farmhouse Salad", description: "Fresh greens and garden veggies served with homemade Ranch dressing." },
+        { name: "Hand Cut Fries", description: "Fresh-cut and fried to golden perfection, seasoned with your choice of our signature BBQ rub or Salt & Vinegar." },
+        { name: "Elote Pasta Salad", description: "Our famous smoked elote tossed with pasta for a refreshing take on the classic." },
+        { name: "Red Coleslaw", description: "Crisp shredded red cabbage and carrots tossed in a tangy, creamy dressing for a bright, crunchy twist on a backyard classic." },
+        { name: "Cornbread Duo", description: "Sweet Maple Butter – Soft, golden cornbread served with whipped maple butter\nSpicy Jalapeño Cheddar – A bold twist with melty cheddar and a kick of jalapeño" },
+    ];
+
+    const sandwiches = [
+        { name: "Pulled Pork Sandwich", description: "Slow-smoked pulled pork piled high on a toasted bun, topped with creamy coleslaw and crisp pickles." },
+        { name: "Brisket Sandwich", description: "Thin sliced tender brisket piled high on a toasted bun, topped with creamy coleslaw and crisp pickles." },
+        { name: "Smoked BBQ Meatball Sub", description: "House-smoked meatballs drenched in our classic BBQ sauce, topped with melted cheese, pickled jalapenos, and fresh scallions, served on a toasted sub roll." },
+        { name: "Smoked Brisket Cheesesteak", description: "Chopped, smoked brisket grilled with peppers and onions, smothered in melted cheese, and served on a toasted sub roll." },
+        { name: "Taco Trio", description: "Tacos packed with pulled chicken, brisket, and pork on a homemade corn tortilla, topped with cilantro, cotija cheese, scallions, and chipotle salsa." },
+        { name: "Smoked Lobster Roll", description: "Smoked Old Bay seasoned lobster tail and claw meat tossed with mayo and served warm on a homemade milk roll with chives." },
+    ];
+
+    const soups = [
+        { name: "Smoked Maine Seafood Chowdah", description: "Rich, velvety chowder loaded with fresh coastal seafood of haddock, crab, and smoked lobster, gently infused with hardwood smoke, finished with scallions, house made bacon, and Old Bay butter seasoned oyster crackers.", note: "An award winning classic" },
+        { name: "Andie's Cowboy Chili", description: "Hearty, slow-smoked brisket and bean chili packed with bold spices, peppers, tomatoes, and a kick of smoky heat, crowned with shredded cheddar and scallions.", note: "An award winning classic" },
+        { name: "Loaded Baked Potato Soup", description: "Thick, comforting potato soup blended with rich cream and leeks, topped with tender smoked brisket, sharp cheddar, bacon bits, jalapenos, and green onions." },
+    ];
+
+    const desserts = [
+        { name: "Maine Blueberry Sheet Cake", description: "A moist, tender sheet cake bursting with wild Maine blueberries and lightly dusted with maple sugar." },
+        { name: "S’mores Slab Pie", description: "Layers of rich chocolate nestled in a graham cracker crust, baked to perfection and finished with homemade marshmallow fluff, torched golden and sprinkled with more graham for that fireside feel." },
+        { name: "Key Lime Pie Jars", description: "Tangy key lime custard served in mini mason jars, topped with a cloud of toasted marshmallow meringue." },
+        { name: "Maple Custard Pie", description: "Slab-style pie with a buttery crust and silky maple custard filling, drizzled with bourbon maple caramel and served warm with a scoop of vanilla ice cream." },
+        { name: "Corn-Flower Cake", description: "A rustic, golden cake baked with stone-ground cornmeal and fresh corn puree, featuring a caramelized turbinado sugar crust on the bottom and a sweet syrup glaze, served with fresh maple whipped cream." },
+        { name: "Seasonal Hand Pies with Ice Cream", description: "Flaky, golden hand pies filled with the season’s best fruits, served warm with a scoop of creamy vanilla ice cream. Rustic, nostalgic, and always changing with the harvest." },
+    ];
+
+    return (
+        <div className="py-16 bg-gray-50">
+            <div className="container mx-auto px-6 max-w-4xl">
+                <h2 className="text-center text-5xl font-bold text-gray-800 mb-4 font-serif">Game Day Packages</h2>
+                <p className="text-center text-gray-700 mb-12">
+                    Serving sizes and pricing below are starting guides — reach out and we’ll tailor a package to your headcount.
+                </p>
+
+                <div className="mb-12 overflow-x-auto">
+                    <table className="w-full text-left border-collapse min-w-[640px]">
+                        <thead>
+                            <tr className="border-b-2 border-[#05412b]/30">
+                                <th className="py-2 pr-4 text-lg font-bold text-[#05412b]">Platter</th>
+                                <th className="py-2 pr-4 text-lg font-bold text-[#05412b]">Serving Size</th>
+                                <th className="py-2 text-lg font-bold text-[#05412b]">Pricing</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {pricing.map(row => (
+                                <tr key={row.platter} className="border-b border-gray-200 align-top">
+                                    <td className="py-3 pr-4 font-semibold text-gray-800 whitespace-nowrap">{row.platter}</td>
+                                    <td className="py-3 pr-4 text-gray-600">{row.serves}</td>
+                                    <td className="py-3 text-gray-600">{row.price}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <MenuCategory title="Small Bite Platters">
+                    {smallBites.map(item => <MenuItem key={item.name} {...item} />)}
+                </MenuCategory>
+
+                <MenuCategory title="Meat Platters">
+                    {meats.map(item => <MenuItem key={item.name} {...item} />)}
+                </MenuCategory>
+
+                <MenuCategory title="Side Platters">
+                    {sidePlatters.map(item => <MenuItem key={item.name} {...item} />)}
+                </MenuCategory>
+
+                <MenuCategory title="Sandwiches">
+                    {sandwiches.map(item => <MenuItem key={item.name} {...item} />)}
+                </MenuCategory>
+
+                <MenuCategory title="Soups">
+                    {soups.map(item => <MenuItem key={item.name} {...item} />)}
+                </MenuCategory>
+
+                <MenuCategory title="Desserts">
+                    {desserts.map(item => <MenuItem key={item.name} {...item} />)}
+                </MenuCategory>
+            </div>
+        </div>
+    );
+};
+
 const OurStoryPage = () => (
     <div className="py-16 bg-white">
         <div className="container mx-auto px-6">
@@ -303,7 +427,7 @@ const OurStoryPage = () => (
 // Web3Forms' side. Manage recipients and integrations at https://web3forms.com.
 const WEB3FORMS_ACCESS_KEY = '5db7e407-19e0-49bb-ab55-bf7838fc226a';
 
-const ContactUsPage = () => {
+const ContactUsPage = ({ setCurrentPage }) => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState({ message: '', type: '' });
   const [submitting, setSubmitting] = useState(false);
@@ -362,7 +486,16 @@ const ContactUsPage = () => {
       <div className="container mx-auto px-6">
         <div className="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-lg">
           <h2 className="text-center text-4xl font-bold text-[#05412b] mb-2 font-serif">Get In Touch</h2>
-          <p className="text-center text-gray-600 mb-8">Pine Coast BBQ offers catering and special options for events, weddings, family celebrations, and corporate functions with customizable menus, in person support, or delivery options. Have a question or a catering request? Drop us a line!</p>
+          <p className="text-center text-gray-600 mb-6">Pine Coast BBQ offers catering and special options for events, weddings, family celebrations, and corporate functions with customizable menus, in person support, or delivery options. Have a question or a catering request? Drop us a line!</p>
+          <div className="text-center mb-8">
+            <button
+              type="button"
+              onClick={() => setCurrentPage('game-day')}
+              className="inline-block bg-[#bf9000] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#a67d00] transition-colors duration-300"
+            >
+              See our NEW Game Day Packages &rarr;
+            </button>
+          </div>
           <form onSubmit={handleSubmit}>
             {/* Honeypot field for spam bots — hidden from real users */}
             <input
@@ -440,10 +573,12 @@ function App() {
         return <HomePage setCurrentPage={setCurrentPage} />;
       case 'menu':
         return <MenuPage />;
+      case 'game-day':
+        return <GameDayPage />;
       case 'our-story':
         return <OurStoryPage />;
       case 'contact-us':
-        return <ContactUsPage />;
+        return <ContactUsPage setCurrentPage={setCurrentPage} />;
       default:
         return <HomePage />;
     }
