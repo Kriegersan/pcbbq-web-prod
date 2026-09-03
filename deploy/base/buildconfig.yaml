@@ -13,9 +13,13 @@ spec:
     dockerStrategy:
       dockerfilePath: Dockerfile
   output:
+    # Push straight to the integrated registry path. The registry auto-creates
+    # the pcbbq-web ImageStream + :latest tag on push, which still drives the
+    # Deployment's image trigger. (Avoids a build-controller ImageStream-output
+    # resolution quirk seen right after the registry was enabled on this cluster.)
     to:
-      kind: ImageStreamTag
-      name: pcbbq-web:latest
+      kind: DockerImage
+      name: image-registry.openshift-image-registry.svc:5000/pcbbq/pcbbq-web:latest
   runPolicy: Serial
   triggers:
     - type: ConfigChange
