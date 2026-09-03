@@ -1,0 +1,7 @@
+**/node_modules
+**/.pnp
+pine-coast-bbq-app/build
+pine-coast-bbq-app/coverage
+.git
+.gitignore
+*.xcf

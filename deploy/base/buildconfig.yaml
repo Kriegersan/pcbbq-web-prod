@@ -1,0 +1,28 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: pcbbq-web
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/Kriegersan/pcbbq-web-prod.git
+      ref: main
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: pcbbq-web:latest
+  runPolicy: Serial
+  triggers:
+    - type: ConfigChange
+    # GitHub push trigger. The referenced secret is created out-of-band (it is a
+    # secret, so not committed) — see deploy/README.md. Until the GitHub webhook
+    # is wired, run:  oc -n <ns> start-build pcbbq-web --follow
+    - type: GitHub
+      github:
+        secretReference:
+          name: pcbbq-web-webhook

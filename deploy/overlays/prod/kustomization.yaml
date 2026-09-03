@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# TODO: confirm the target namespace/project name.
+namespace: pcbbq
+
+resources:
+  - ../../base
+
+labels:
+  - pairs:
+      app.kubernetes.io/name: pcbbq-web
+      app.kubernetes.io/part-of: pinecoastbbq
+    includeSelectors: false
+
+# Example of overriding the hostname without editing base/route.yaml:
+# patches:
+#   - target:
+#       kind: Route
+#       name: pcbbq-web
+#     patch: |
+#       - op: replace
+#         path: /spec/host
+#         value: pcbbq-web-pcbbq.apps.ocp.example.home

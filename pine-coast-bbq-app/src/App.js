@@ -298,9 +298,15 @@ const OurStoryPage = () => (
     </div>
 );
 
+// Web3Forms access key. Safe to ship in client-side code: it is meant to be
+// public, is scopable to your domain, and submissions are spam-filtered on
+// Web3Forms' side. Manage recipients and integrations at https://web3forms.com.
+const WEB3FORMS_ACCESS_KEY = '5db7e407-19e0-49bb-ab55-bf7838fc226a';
+
 const ContactUsPage = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState({ message: '', type: '' });
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -309,28 +315,45 @@ const ContactUsPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Honeypot: real users never see or check this field; bots that fill it get dropped.
+    if (e.target.botcheck && e.target.botcheck.checked) {
+      return;
+    }
+
+    setSubmitting(true);
     setStatus({ message: 'Sending...', type: 'info' });
 
     try {
-        const apiUrl = process.env.REACT_APP_API_URL || '';
-        const response = await fetch(`${apiUrl}/api/contact`, {
-            method: 'POST',
-            headers: {
-              'Content-type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-          });
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `New Contact Form Submission from ${formData.name}`,
+          from_name: 'Pine Coast BBQ Website',
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        }),
+      });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (data.success) {
         setStatus({ message: 'Success! We will get back to you soon.', type: 'success' });
         setFormData({ name: '', email: '', message: '' });
       } else {
-        const errorData = await response.json();
-        setStatus({ message: `Error: ${errorData.error || 'Something went wrong.'}`, type: 'error' });
+        setStatus({ message: `Error: ${data.message || 'Something went wrong.'}`, type: 'error' });
       }
     } catch (error) {
       console.error('Submission error:', error);
       setStatus({ message: 'Error: Could not connect to the server.', type: 'error' });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -341,6 +364,15 @@ const ContactUsPage = () => {
           <h2 className="text-center text-4xl font-bold text-[#05412b] mb-2 font-serif">Get In Touch</h2>
           <p className="text-center text-gray-600 mb-8">Pine Coast BBQ offers catering and special options for events, weddings, family celebrations, and corporate functions with customizable menus, in person support, or delivery options. Have a question or a catering request? Drop us a line!</p>
           <form onSubmit={handleSubmit}>
+            {/* Honeypot field for spam bots — hidden from real users */}
+            <input
+              type="checkbox"
+              name="botcheck"
+              className="hidden"
+              style={{ display: 'none' }}
+              tabIndex="-1"
+              autoComplete="off"
+            />
             <div className="mb-5">
               <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Full Name</label>
               <input type="text" name="name" id="name" value={formData.name} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#6aa84f] focus:border-[#6aa84f]" placeholder="John Doe" required />
@@ -353,8 +385,8 @@ const ContactUsPage = () => {
               <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-700">Message</label>
               <textarea name="message" id="message" rows="5" value={formData.message} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#6aa84f] focus:border-[#6aa84f]" placeholder="Your message here..." required></textarea>
             </div>
-            <button type="submit" className="w-full bg-[#6aa84f] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#5a9142] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6aa84f]">
-              Send Message
+            <button type="submit" disabled={submitting} className="w-full bg-[#6aa84f] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#5a9142] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6aa84f] disabled:opacity-60 disabled:cursor-not-allowed">
+              {submitting ? 'Sending...' : 'Send Message'}
             </button>
           </form>
           {status.message && (

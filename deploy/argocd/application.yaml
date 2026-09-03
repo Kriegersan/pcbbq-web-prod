@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pcbbq-web
+  # TODO: the namespace your Argo CD / OpenShift GitOps instance runs in
+  # (openshift-gitops by default).
+  namespace: openshift-gitops
+spec:
+  project: default # TODO: set if you use a dedicated AppProject
+  source:
+    repoURL: https://github.com/Kriegersan/pcbbq-web-prod.git
+    targetRevision: main
+    path: deploy/overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: pcbbq # TODO: match overlays/prod/kustomization.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  ignoreDifferences:
+    # OpenShift's image trigger rewrites the container image to a pinned digest.
+    # That is expected mutation, not drift.
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/template/spec/containers/0/image

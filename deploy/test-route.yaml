@@ -1,0 +1,24 @@
+# Throwaway Route for pre-cutover testing on the cluster apps-wildcard.
+# NOT part of the kustomize base / Argo app. Apply and delete by hand:
+#   oc apply -f deploy/test-route.yaml
+#   oc -n pcbbq delete route pcbbq-web-test        # after cutover
+# Uses the router's default *.apps wildcard cert, so no custom TLS material here.
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: pcbbq-web-test
+  namespace: pcbbq
+  labels:
+    app: pcbbq-web
+spec:
+  host: pcbbq-web-pcbbq.apps.nelly.klownpoundproductions.com
+  to:
+    kind: Service
+    name: pcbbq-web
+    weight: 100
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None

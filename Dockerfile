@@ -1,35 +1,15 @@
-# Use the official Golang image which includes all necessary tools and certificates
-# This version is updated to satisfy the go.mod requirements.
-FROM golang:1.24.6-bookworm as builder
-
-# Set the Current Working Directory inside the container
+# ---- build the React SPA ----
+FROM node:20-bookworm-slim AS build
 WORKDIR /app
+COPY pine-coast-bbq-app/package.json pine-coast-bbq-app/package-lock.json ./
+RUN npm ci
+COPY pine-coast-bbq-app/ ./
+RUN npm run build
 
-# Copy go mod and sum files
-COPY go.mod go.sum ./
-# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
-RUN go mod download
-
-# Copy the source code from the current directory to the Working Directory inside the container
-COPY . .
-
-# Build the Go app
-RUN CGO_ENABLED=0 GOOS=linux go build -v -o server .
-
-
-# --- Final Stage ---
-# Start a new, smaller image to reduce final image size
-FROM debian:bookworm-slim
-
-# It's good practice to install certificates again in the final slim image
-RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-
-# Copy the built binary from the builder stage
-COPY --from=builder /app/server /usr/local/bin/server
-
-# Expose port 8080 to the outside world
+# ---- serve it ----
+# nginx-unprivileged: listens on 8080, runs as non-root, tolerates OpenShift's
+# arbitrary UID under the restricted-v2 SCC.
+FROM nginxinc/nginx-unprivileged:1.27-alpine
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 8080
-
-# Command to run the executable
-CMD ["server"]
-

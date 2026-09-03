@@ -1,0 +1,27 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: pcbbq-web
+  labels:
+    app: pcbbq-web
+  annotations:
+    haproxy.router.openshift.io/disable_cookies: "true"
+spec:
+  # Any FQDN is allowed here regardless of the cluster's ingress wildcard domain.
+  # Before DNS cutover, test against the apps-wildcard instead, e.g.
+  #   pcbbq-web-pcbbq.apps.<cluster-domain>
+  host: pinecoastbbq.com
+  to:
+    kind: Service
+    name: pcbbq-web
+    weight: 100
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+    # The Porkbun cert lives in a TLS Secret, created out-of-band so the private
+    # key never enters git. See deploy/README.md. Requires OpenShift >= 4.16.
+    externalCertificate:
+      name: pinecoastbbq-tls
+  wildcardPolicy: None
