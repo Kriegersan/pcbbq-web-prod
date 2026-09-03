@@ -65,29 +65,27 @@ covered. It is a 90-day Let's Encrypt cert; the current one expires
 **2026-10-03**. Re-download from Porkbun and re-apply the Secret (command below)
 each cycle, or automate later with cert-manager + a Porkbun DNS-01 solver.
 
-### Attach it (OpenShift 4.18) — `externalCertificate`
+### Attach it — patch the Route (this cluster)
 
-`base/route.yaml` already references Secret `pinecoastbbq-tls`. Create it
-out-of-band so the key never enters git / Argo:
+`RouteExternalCertificate` is **not enabled** on nelly, so a TLS Secret
+reference (`spec.tls.externalCertificate`) is silently stripped. Instead the
+cert/key are patched straight into the Route; Argo ignores those fields
+(`deploy/argocd/application.yaml` -> `ignoreDifferences`) so the key stays out
+of git.
+
 ```
 cd ~/Downloads/pinecoastbbq.com-ssl-bundle
+oc -n pcbbq patch route pcbbq-web --type=merge -p "$(python3 - <<'PY'
+import json
+cert=open('domain.cert.pem').read(); key=open('private.key.pem').read()
+print(json.dumps({"spec":{"tls":{"certificate":cert,"key":key}}}))
+PY
+)"
+```
+Same command on renewal (re-download the bundle from Porkbun first).
 
-oc -n pcbbq create secret tls pinecoastbbq-tls \
-  --cert=domain.cert.pem --key=private.key.pem
-
-# allow the ingress router to read that one Secret
-oc -n pcbbq create role read-pinecoastbbq-tls \
-  --verb=get,list,watch --resource=secrets --resource-name=pinecoastbbq-tls
-oc -n pcbbq create rolebinding read-pinecoastbbq-tls \
-  --role=read-pinecoastbbq-tls \
-  --serviceaccount=openshift-ingress:router
-```
-On renewal:
-```
-oc -n pcbbq create secret tls pinecoastbbq-tls \
-  --cert=domain.cert.pem --key=private.key.pem \
-  --dry-run=client -o yaml | oc apply -f -
-```
+`domain.cert.pem` is already a leaf-first fullchain, so `caCertificate` is not
+needed separately.
 
 ## Pre-cutover test URL
 

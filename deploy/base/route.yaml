@@ -20,8 +20,9 @@ spec:
   tls:
     termination: edge
     insecureEdgeTerminationPolicy: Redirect
-    # The Porkbun cert lives in a TLS Secret, created out-of-band so the private
-    # key never enters git. See deploy/README.md. Requires OpenShift >= 4.16.
-    externalCertificate:
-      name: pinecoastbbq-tls
+    # The Porkbun cert (spec.tls.certificate / key / caCertificate) is patched in
+    # out-of-band so the private key never enters git; Argo ignores those fields
+    # (see deploy/argocd/application.yaml -> ignoreDifferences) and deploy/README.md.
+    # This cluster does not have RouteExternalCertificate enabled, so a TLS Secret
+    # reference is not an option here.
   wildcardPolicy: None
