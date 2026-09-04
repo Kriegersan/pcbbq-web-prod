@@ -29,8 +29,8 @@ const Header = ({ setCurrentPage, isMenuOpen, setIsMenuOpen }) => {
     <header className="bg-[#05412b] bg-opacity-90 backdrop-blur-md text-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         <div className="flex items-center">
-          <img src={LogoImage} alt="Pine Coast BBQ Logo" className="h-12 w-auto" />
-          <h1 className="text-3xl font-bold text-[#bf9000] tracking-wider font-serif ml-3">Pine Coast BBQ</h1>
+          <img src={LogoImage} alt="Pine Coast BBQ Logo" className="h-12 w-auto brightness-0 invert" />
+          <h1 className="text-3xl text-white tracking-wider ml-3" style={{ fontFamily: "'Bungee Shade', system-ui, sans-serif" }}>Pine Coast BBQ</h1>
         </div>
         <nav className="hidden md:flex space-x-6">
           {navLinks.map(link => (
