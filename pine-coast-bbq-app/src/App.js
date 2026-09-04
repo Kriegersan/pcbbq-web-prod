@@ -104,31 +104,35 @@ const HomePage = ({ setCurrentPage }) => (
       <div className="container mx-auto px-6 text-center">
         <h3 className="text-4xl font-bold text-[#05412b] mb-8">Taste the Tradition</h3>
         <p className="text-lg text-[#2d2c2c] max-w-3xl mx-auto mb-10">
-          Pine Coast BBQ is a budding business based in Maine founded by Keith and Laura Nelson. The mission and vision of Pine Coast BBQ is to serve bold, soulful barbecue inspired by Texas, Georgia, and Kansas City traditions—crafted with Maine-grown ingredients and coastal heritage—while creating a welcoming space that feeds connection, celebration, and local pride as a hub for locals and visitors alike
+          Pine Coast BBQ is a budding business based in Maine founded by Keith and Laura Nelson. The mission and vision of Pine Coast BBQ is to serve bold, soulful barbecue inspired by Texas, Georgia, and Kansas City traditions—crafted with Maine-grown ingredients and coastal heritage.
         </p>
         <div className="grid md:grid-cols-3 gap-8">
           <div
             onClick={() => setCurrentPage('menu')}
             className="bg-white p-6 rounded-lg shadow-md cursor-pointer transform hover:-translate-y-2 transition-transform duration-300"
           >
-            <h4 className="text-2xl font-semibold text-[#6aa84f] mb-3">Tender Brisket</h4>
-            <p>12-hour smoked, hand-sliced, and served with our signature sauce.</p>
+            <h4 className="text-2xl font-semibold text-[#6aa84f] mb-3">Texas-Style Brisket</h4>
+            <p>Prime beef brisket seasoned simply, slow-smoked for up to 16 hours until melt-in-your-mouth tender with a rich, peppery bark.</p>
+            <p className="text-sm text-gray-500 italic mt-2">An award winning classic</p>
           </div>
           <div
             onClick={() => setCurrentPage('menu')}
             className="bg-white p-6 rounded-lg shadow-md cursor-pointer transform hover:-translate-y-2 transition-transform duration-300"
           >
             <h4 className="text-2xl font-semibold text-[#45818e] mb-3">Pulled Pork</h4>
-            <p>Fall-apart tender pork shoulder, perfect in a sandwich or on its own.</p>
+            <p>Boston butt pork roast rubbed, smoked low and slow, and hand-shredded into tender, juicy ribbons of savory perfection.</p>
           </div>
           <div
             onClick={() => setCurrentPage('menu')}
             className="bg-white p-6 rounded-lg shadow-md cursor-pointer transform hover:-translate-y-2 transition-transform duration-300"
           >
-            <h4 className="text-2xl font-semibold text-[#cc0000] mb-3">Savory Ribs</h4>
-            <p>St. Louis style ribs, glazed with a sweet and tangy finish.</p>
+            <h4 className="text-2xl font-semibold text-[#cc0000] mb-3">Pork Ribs</h4>
+            <p>Rack of tender ribs featuring a sticky, caramelized Maple glaze, sweet-and-savory rub.</p>
           </div>
         </div>
+        <p className="text-lg text-[#05412b] font-semibold mt-10">
+          Pine Coast BBQ has received five awards for their brisket, chowdah, and brisket chili from local competitions.
+        </p>
       </div>
     </section>
   </div>
@@ -206,7 +210,7 @@ const MenuPage = () => {
             ]
         },
         meats: [
-            "Brisket", "Pulled Pork", "Pork Ribs", "Chicken Thighs", "Turkey Breast", "House Sausage", "Gouda & Poblano Sausage", "Lobster Tails (Mrkt availability)"
+            "Texas-Style Brisket", "Pulled Pork", "Pork Ribs", "Chicken Thighs", "Turkey Breast", "House Sausage", "Gouda & Poblano Sausage", "Lobster Tails (Mrkt availability)"
         ],
         sandwiches: {
             description: "all served with choice of 2 sides",
