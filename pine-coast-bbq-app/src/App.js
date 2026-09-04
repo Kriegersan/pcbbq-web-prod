@@ -168,14 +168,14 @@ const MenuPage = () => {
             "Maine has a rich history of agriculture. Pine Coast BBQ brings a bold, innovative twist to traditional barbecue, redefining what a Maine family restaurant can be. With a commitment to creativity and a fearless approach to flavor, our fusion-style menu blends hometown comfort with unexpected combinations that go beyond southern staples."
         ],
         dinnerPlates: {
-            description: "all served with Pickles, Picked onions and jalapenos",
+            description: "all served with pickles, picked onions and jalapenos",
             options: [
                 "Mini Platter – 3 meats, 3 sides, served with cornbread",
                 "Family Platter – 5 meats, 5 sides, served with cornbread"
             ]
         },
         meats: [
-            "Brisket", "Pulled Pork", "Pork Ribs", "Chicken thighs", "Turkey breast", "House Sausage", "Gouda & Poblano Sausage", "Lobster tails (Mrkt availability)"
+            "Brisket", "Pulled Pork", "Pork Ribs", "Chicken Thighs", "Turkey Breast", "House Sausage", "Gouda & Poblano Sausage", "Lobster Tails (Mrkt availability)"
         ],
         sandwiches: {
             description: "all served with choice of 2 sides",
@@ -194,7 +194,6 @@ const MenuPage = () => {
             ]
         },
         desserts: {
-            price: "$8",
             items: [
                 { name: "Maine Blueberry Sheet Cake", description: "A moist, tender sheet cake bursting with wild Maine blueberries and lightly dusted with maple sugar" },
                 { name: "S’mores Slab Pie", description: "Layers of rich chocolate nestled in a graham cracker crust, baked to perfection and finished with homemade marshmallow fluff, torched golden and sprinkled with more graham for that fireside feel" },
@@ -243,7 +242,7 @@ const MenuPage = () => {
                 </MenuCategory>
 
                 {/* Desserts */}
-                <MenuCategory title="Desserts" subtitle={menuData.desserts.price}>
+                <MenuCategory title="Desserts">
                     {menuData.desserts.items.map(item => <MenuItem key={item.name} {...item} />)}
                 </MenuCategory>
 
