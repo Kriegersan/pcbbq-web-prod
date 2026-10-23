@@ -92,18 +92,6 @@ PY
 needed separately. Only needed for bootstrap now — `pcbbq-cert-renew` handles
 this going forward.
 
-## Pre-cutover test URL
-
-`deploy/test-route.yaml` is a standalone Route (not in the Argo app) on the
-cluster apps-wildcard: `pcbbq-web-pcbbq.apps.nelly.klownpoundproductions.com`.
-```
-oc apply -f deploy/test-route.yaml
-```
-It uses the router's default `*.apps` cert. If the browser shows a cert warning
-there, the router default isn't a matching wildcard — fall back to testing the
-real Route with a hosts-file entry or `curl --resolve` (see gates below).
-Delete it after cutover: `oc -n pcbbq delete route pcbbq-web-test`
-
 ### Fallback (any version) — patch the Route, ignore in Argo
 
 Remove the `externalCertificate` block from `route.yaml`, then at bootstrap:
@@ -137,8 +125,7 @@ does not strip it:
    curl -sI  --resolve pinecoastbbq.com:443:$IP https://pinecoastbbq.com | head -1
    curl -s   --resolve pinecoastbbq.com:443:$IP https://pinecoastbbq.com/our-story | grep -o '<title>.*</title>'
    ```
-   `-s` without `-k` also confirms the Porkbun chain validates. Or browse the
-   apps-wildcard test host.
+   `-s` without `-k` also confirms the Porkbun chain validates.
 4. ASUS router forwards TCP 80 and 443 from the WAN to the OpenShift ingress
    (router LB IP / node). `kpp.asuscomm.com` DDNS is updating.
 5. Netlify DNS record TTL lowered (e.g. 300s) at least one old-TTL period
