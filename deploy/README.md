@@ -61,9 +61,14 @@ The Porkbun bundle (`pinecoastbbq.com-ssl-bundle.zip`) contains:
 - `private.key.pem` — the key. (`public.key.pem` is unused.)
 
 This cert's SANs are `pinecoastbbq.com` and `*.pinecoastbbq.com`, so `www` is
-covered. It is a 90-day Let's Encrypt cert; the current one expires
-**2026-10-03**. Re-download from Porkbun and re-apply the Secret (command below)
-each cycle, or automate later with cert-manager + a Porkbun DNS-01 solver.
+covered. It is a 90-day Let's Encrypt cert.
+
+**Renewal is automated** — see
+[`krbn/pcbbq-cert-renew`](http://192.168.2.22:3000/krbn/pcbbq-cert-renew) on
+Gitea (AAP job template `pcbbq-web — Cert Renew`, runs weekly). It polls
+Porkbun's `ssl/retrieve` API (no re-download needed) and patches the Route
+only when the cert actually changed. The manual steps below are for initial
+bootstrap, or as a fallback if the automation ever breaks.
 
 ### Attach it — patch the Route (this cluster)
 
@@ -82,10 +87,10 @@ print(json.dumps({"spec":{"tls":{"certificate":cert,"key":key}}}))
 PY
 )"
 ```
-Same command on renewal (re-download the bundle from Porkbun first).
 
 `domain.cert.pem` is already a leaf-first fullchain, so `caCertificate` is not
-needed separately.
+needed separately. Only needed for bootstrap now — `pcbbq-cert-renew` handles
+this going forward.
 
 ## Pre-cutover test URL
 
